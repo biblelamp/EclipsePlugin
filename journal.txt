@@ -1,0 +1,6 @@
+Dec 22, 2016
+
+I got a test task from Xored https://docs.xored.com/display/XL/Xored+home+work+test+task
+To implement/develop Eclipse Plugin(s) adding this new type of launch-configuration.
+
+I started to learn http://www.vogella.com/tutorials/EclipsePlugin/article.html, downloaded Eclipse SDK tried to make simple plugin, using PDE pattern and push it into github.
