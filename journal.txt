@@ -1,14 +1,22 @@
 Dec 22, 2016
 
 I got a test task from Xored https://docs.xored.com/display/XL/Xored+home+work+test+task
-To implement/develop Eclipse Plugin(s) adding this new type of launch-configuration.
+Briefly: to implement/develop Eclipse Plugin(s) adding new type of launch-configuration.
 
-I started to learn http://www.vogella.com/tutorials/EclipsePlugin/article.html and downloaded Eclipse SDK, tried to make simple plugin, using PDE pattern, and push it into github. And the link https://habrahabr.ru/post/243297/ was very useful.
+I'm starting to learn http://www.vogella.com/tutorials/EclipsePlugin/article.html and download Eclipse SDK, try to make simple plugin, using PDE pattern, and push it into github. And the link https://habrahabr.ru/post/243297/ is very useful.
 
-I also noted the link https://www.ibm.com/developerworks/ru/library/os-eclipse-plugindev1/
+I also note the link https://www.ibm.com/developerworks/ru/library/os-eclipse-plugindev1/
 
 Dec 23, 2016
 
 What is the launch configuration?
 I have to read http://wiki.eclipse.org/FAQ_What_is_a_launch_configuration%3F
 How to make it? I have to read http://www.eclipse.org/articles/Article-Launch-Framework/launch.html
+
+Dec 24, 2016
+
+I continue reading article about launch configuration.
+And explore directory ...\workspace\ which contains xml launch files in directory
+...\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches
+I try to get Eclipse workspace path (http://exploreeclipse.blogspot.ru/2014/01/getting-eclipse-workspace-file-system.html) but I fail...
+I have to continue to study this.
