@@ -20,3 +20,9 @@ And explore directory ...\workspace\ which contains xml launch files in director
 ...\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches
 I try to get Eclipse workspace path (http://exploreeclipse.blogspot.ru/2014/01/getting-eclipse-workspace-file-system.html) but I fail...
 I have to continue to study this.
+
+Dec 25, 2016
+
+I found better article by this theme
+http://www.vogella.com/tutorials/EclipseLauncherFramework/article.html
+and started study it...
