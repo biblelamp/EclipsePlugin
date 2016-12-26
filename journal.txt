@@ -26,3 +26,8 @@ Dec 25, 2016
 I found better article by this theme
 http://www.vogella.com/tutorials/EclipseLauncherFramework/article.html
 and started study it...
+
+Dec 26, 2016
+
+I have read also this article http://codeandme.blogspot.ru/2013/11/debugger-2-launch-framework-not-only.html
+and began to write Composite Launch (EclipseCompositeLaunch)...
