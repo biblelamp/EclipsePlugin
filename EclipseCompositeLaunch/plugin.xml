@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="compositelaunch.core.CompositeLaunchConfigurationDelegate"
+            id="CompositeLaunch"
+            modes="run, debug"
+            name="Composite Launch"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="compositelaunch.ui.CompositeTabGroup"
+            id="CompositeTabGroup"
+            type="CompositeLaunch">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="CompositeLaunch"
+            icon="icons/sample.gif"
+            id="Image">
+      </launchConfigurationTypeImage>
+   </extension>
+
+</plugin>
