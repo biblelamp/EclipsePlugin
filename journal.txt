@@ -31,3 +31,10 @@ Dec 26, 2016
 
 I have read also this article http://codeandme.blogspot.ru/2013/11/debugger-2-launch-framework-not-only.html
 and began to write Composite Launch (EclipseCompositeLaunch)...
+
+Dec 27, 2016
+
+Yesterday I made new plug-in project in Eclipse (EclipseCompositeLaunch)
+and found out how to create new type of configuration. I added 2 plug-ins in manifest.mf (org.eclipse.debug.core, org.eclipse.debug.ui) and edited only plugin.xml, added 3 extention.
+
+Today I added new package compositelaunch.ui and class CompositeTabGroup, inheriting it from AbstractLaunchConfigurationTabGroup. I still use only common tab (CommonTab()).
