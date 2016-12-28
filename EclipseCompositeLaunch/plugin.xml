@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="compositelaunch.core.CompositeLaunchConfigurationDelegate"
+            delegate="compositelaunch.core.CompositeConfigurationDelegate"
             id="CompositeLaunch"
             modes="run, debug"
             name="CompositeLaunch"

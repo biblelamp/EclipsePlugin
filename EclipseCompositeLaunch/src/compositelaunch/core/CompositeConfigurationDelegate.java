@@ -6,7 +6,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
-public class CompositeLaunchConfigurationDelegate implements ILaunchConfigurationDelegate {
+/**
+ * The CompositeConfigurationDelegate class for launching
+ */
+public class CompositeConfigurationDelegate implements ILaunchConfigurationDelegate {
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
@@ -14,7 +17,7 @@ public class CompositeLaunchConfigurationDelegate implements ILaunchConfiguratio
 
 		// TODO launch code
 		System.out.println("TODO launch code");
-		
+
 	}
 
 }
