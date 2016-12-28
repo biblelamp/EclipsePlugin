@@ -41,5 +41,6 @@ Today I added new package compositelaunch.ui and class CompositeTabGroup, inheri
 
 Dec 28, 2016
 
-I changed icon image and made CompositeLaunchConfigurationDelegate class as "software cap".
+I changed icon image and made CompositeConfigurationDelegate class as "software cap".
 And I'm going to find out how to write my CompositeTab() class...
+I created class CompositeTab() and started to find out how to make proper UI...
