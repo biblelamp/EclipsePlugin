@@ -7,7 +7,7 @@
             delegate="compositelaunch.core.CompositeLaunchConfigurationDelegate"
             id="CompositeLaunch"
             modes="run, debug"
-            name="Composite Launch"
+            name="CompositeLaunch"
             public="true">
       </launchConfigurationType>
    </extension>
@@ -23,7 +23,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="CompositeLaunch"
-            icon="icons/sample.gif"
+            icon="icons/launch.png"
             id="Image">
       </launchConfigurationTypeImage>
    </extension>
