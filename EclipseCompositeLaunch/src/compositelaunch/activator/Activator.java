@@ -6,6 +6,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ * @version 0.0.2 dated Dec 28, 2016
  */
 public class Activator extends AbstractUIPlugin {
 
@@ -53,7 +55,6 @@ public class Activator extends AbstractUIPlugin {
 	 * relative path
 	 * 
 	 * @param path
-	 *            the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {

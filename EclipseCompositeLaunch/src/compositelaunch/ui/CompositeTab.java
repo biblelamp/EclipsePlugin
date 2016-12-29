@@ -10,7 +10,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import compositelaunch.activator.Activator;
 
 /**
- * The CompositeTab class for tab with configuration' list for launch
+ * The CompositeTab class for tab with configuration's list for launch
+ *
+ * @version 0.0.2 dated Dec 28, 2016
  */
 public class CompositeTab extends AbstractLaunchConfigurationTab {
 

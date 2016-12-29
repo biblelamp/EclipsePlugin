@@ -7,6 +7,8 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
  * The CompositeTabGroup class for working with tabs
+ * 
+ * @version 0.0.2 dated Dec 28, 2016
  */
 public class CompositeTabGroup extends AbstractLaunchConfigurationTabGroup {
 
