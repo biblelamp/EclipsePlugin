@@ -54,3 +54,8 @@ Dec 30, 2016
 
 I have to read http://www.ibm.com/developerworks/ru/library/os-jface1/index.html
 and http://www.k-press.ru/cs/2008/2/eclipse/eclipse.asp
+
+Dec 31, 2016
+
+I  experimented with panel buttons (add, delete).
+As far as I understand, with table will be more difficult...
