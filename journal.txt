@@ -59,3 +59,8 @@ Dec 31, 2016
 
 I  experimented with panel buttons (add, delete).
 As far as I understand, with table will be more difficult...
+
+Jan 1, 2017
+
+I have to find out with interface ILaunchConfiguration...
+and create functionality for the button for adding configurations to list
