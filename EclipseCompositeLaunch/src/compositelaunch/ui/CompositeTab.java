@@ -1,5 +1,7 @@
 package compositelaunch.ui;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -12,22 +14,31 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import compositelaunch.activator.Activator;
+import compositelaunch.data.LaunchConfiguration;
 
 /**
- * The CompositeTab class for tab with configuration's list for launch
+ * The CompositeTab class for tab with list of configurations for launch,
+ * overrides the general functionality of the tab
  *
- * @version 0.0.3 dated Dec 31, 2016
+ * @author Sergey Iryupin
+ * @version 0.0.4 dated Jan 1, 2017
  */
 public class CompositeTab extends AbstractLaunchConfigurationTab {
 
 	private static final String NAME_OF_TAB = "Group";
 	private static final String ICON_TAB = "icons/launch.png";
 
+	private LaunchConfiguration launchConfiguration = new LaunchConfiguration();
+
 	private Button addConfiguration;
 	private Button deleteConfiguration;
+
+	Menu menuChoiceConfiguration;
 
 	/*
 	 * Add the desired components on the tab
@@ -47,7 +58,8 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 		addConfiguration.setLayoutData(gridData);
 		addConfiguration.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
-				System.out.println("You push button Add...");
+				choiceConfigurationToAdd();
+				menuChoiceConfiguration.setVisible(true);
 			}
 		});
 
@@ -59,7 +71,6 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		// TODO Auto-generated method stub
 	}
 
 	/*
@@ -67,7 +78,8 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 	 */
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
-		// TODO Auto-generated method stub
+		launchConfiguration.setConfiguration(configuration);
+		System.out.println("initializeFrom");
 	}
 
 	/*
@@ -75,7 +87,7 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 	 */
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		// TODO Auto-generated method stub
+		System.out.println("performApply");
 	}
 
 	// Name of tab
@@ -88,6 +100,46 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public Image getImage() {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, ICON_TAB).createImage();
+	}
+
+	// Choice configuration for adding in table
+	void choiceConfigurationToAdd() {
+
+		if (menuChoiceConfiguration != null)
+			menuChoiceConfiguration.dispose();
+		menuChoiceConfiguration = new Menu(addConfiguration);
+		try {
+			for (ILaunchConfiguration config : DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations()) {
+				String configType = config.getType().getName();
+
+				MenuItem menuItem = null;
+				for (MenuItem item : menuChoiceConfiguration.getItems()) {
+					if (configType.equals(item.getText())) {
+						menuItem = item;
+						break;
+					}
+				}
+
+				if (menuItem == null) {
+					menuItem = new MenuItem(menuChoiceConfiguration, SWT.CASCADE);
+					menuItem.setText(configType);
+
+					Menu subMenuItem = new Menu(menuItem);
+					menuItem.setMenu(subMenuItem);
+				}
+
+				MenuItem menuItem2 = new MenuItem(menuItem.getMenu(), SWT.NONE);
+				menuItem2.setText(config.getName());
+				menuItem2.setData(config);
+			}
+		} catch (CoreException ex) {
+			ex.printStackTrace();
+		}
+
+		if (menuChoiceConfiguration.getItemCount() == 0) {
+			MenuItem menuItem = new MenuItem(menuChoiceConfiguration, SWT.NONE);
+			menuItem.setText("No configurations that can be added");
+		}
 	}
 
 }
