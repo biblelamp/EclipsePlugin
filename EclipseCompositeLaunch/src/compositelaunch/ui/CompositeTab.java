@@ -6,16 +6,20 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import compositelaunch.activator.Activator;
@@ -26,17 +30,24 @@ import compositelaunch.data.LaunchConfiguration;
  * overrides the general functionality of the tab
  *
  * @author Sergey Iryupin
- * @version 0.0.4 dated Jan 1, 2017
+ * @version 0.0.5 dated Jan 2, 2017
  */
 public class CompositeTab extends AbstractLaunchConfigurationTab {
 
-	private static final String NAME_OF_TAB = "Group";
-	private static final String ICON_TAB = "icons/launch.png";
+	private final String NAME_OF_TAB = "Group";
+	private final String ICON_TAB = "icons/launch.png";
+	private final String ADD_BUTTON = "Add...";
+	private final String ADD_BUTTON_TIP = "Click to choice configuration for adding to list";
+	private final String DEL_BUTTON = "Delete";
+	private final String DEL_BUTTON_TIP = "Click to delete configuration from the list";
+	private final int NUM_OF_COLUMNS = 2;
+	private final int WITH_OF_BUTTON = 80;
 
 	private LaunchConfiguration launchConfiguration = new LaunchConfiguration();
 
 	private Button addConfiguration;
 	private Button deleteConfiguration;
+	private Table table;
 
 	Menu menuChoiceConfiguration;
 
@@ -46,27 +57,62 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void createControl(Composite parent) {
 
-		Composite composite = new Group(parent, SWT.BORDER);
+		Composite composite = new Composite(parent, SWT.NONE);
 		setControl(composite);
-		composite.setLayout(new GridLayout(2, false));
 
-		GridData gridData = new GridData();
-		gridData.widthHint = 80;
+		composite.setLayout(new GridLayout(NUM_OF_COLUMNS, false));
+		GridData gridButton = new GridData();
+		gridButton.widthHint = WITH_OF_BUTTON;
 
-		addConfiguration = new Button(composite, SWT.NONE);
-		addConfiguration.setText("Add...");
-		addConfiguration.setLayoutData(gridData);
+		addConfiguration = createPushButton(composite, ADD_BUTTON, null);
+		addConfiguration.setToolTipText(ADD_BUTTON_TIP);
+		addConfiguration.setLayoutData(gridButton);
 		addConfiguration.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
-				choiceConfigurationToAdd();
-				menuChoiceConfiguration.setVisible(true);
+
+				TableItem item = new TableItem(table, SWT.NULL); // for debugging
+				item.setText("Item " + table.getItemCount());
+
+				//choiceConfigurationToAdd();
+				//menuChoiceConfiguration.setVisible(true);
+				updateLaunchConfigurationDialog();
 			}
 		});
 
-		deleteConfiguration = new Button(composite, SWT.NONE);
-		deleteConfiguration.setText("Delete");
-		deleteConfiguration.setLayoutData(gridData);
+		deleteConfiguration = createPushButton(composite, DEL_BUTTON, null);
+		deleteConfiguration.setToolTipText(DEL_BUTTON_TIP);
+		deleteConfiguration.setLayoutData(gridButton);
+		deleteConfiguration.setEnabled(false);
+		deleteConfiguration.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				if (table.getSelectionIndex() > -1) {
+					table.remove(table.getSelectionIndex());
+					deleteConfiguration.setEnabled(false);
+					updateLaunchConfigurationDialog();
+				}
+			}
+		});
 
+		createSeparator(composite, NUM_OF_COLUMNS);
+
+		GridData gridTable = new GridData(GridData.FILL_BOTH);
+		gridTable.horizontalSpan = NUM_OF_COLUMNS;
+
+		table = new Table(composite, SWT.BORDER);
+		table.setHeaderVisible(true);
+		table.setLayoutData(gridTable);
+		TableColumn columnName = new TableColumn(table, SWT.NULL);
+		columnName.setText("Configuration's Name");
+		columnName.pack();
+		TableColumn columnType = new TableColumn(table, SWT.NULL);
+		columnType.setText("Configuration's Type");
+		columnType.pack();
+		table.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e){
+				deleteConfiguration.setEnabled(true);
+			}
+		});
 	}
 
 	@Override
