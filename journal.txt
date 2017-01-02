@@ -64,3 +64,8 @@ Jan 1, 2017
 
 I have to find out with interface ILaunchConfiguration...
 and create functionality for the button for adding configurations to list
+
+Jan 2, 2017
+
+I worked a lot with the component Table and
+learned and tried more with class AbstractLaunchConfigurationTab...
