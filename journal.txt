@@ -69,3 +69,8 @@ Jan 2, 2017
 
 I worked a lot with the component Table and
 learned and tried more with class AbstractLaunchConfigurationTab...
+
+Jan 3, 2017
+
+I continue working with CompositeTab class and
+try to save and restore the list fo configuration...
