@@ -74,3 +74,9 @@ Jan 3, 2017
 
 I continue working with CompositeTab class and
 try to save and restore the list fo configuration...
+
+Jan 4, 2017
+
+I faced the problem with Revert/Apply buttons
+http://stackoverflow.com/questions/33524521/eclipse-custom-launch-configuration-apply-revert-buttons
+Not especially good day - I spent a lot of time, and the results of a little...
