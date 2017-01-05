@@ -80,3 +80,9 @@ Jan 4, 2017
 I faced the problem with Revert/Apply buttons
 http://stackoverflow.com/questions/33524521/eclipse-custom-launch-configuration-apply-revert-buttons
 Not especially good day - I spent a lot of time, and the results of a little...
+
+Jan 5, 2017
+
+Today is a great day.
+I finished (mostly) the writing of the plug-in, which is responsible for editing the configuration list.
+Next stage - launching part (and and any check, sure)
