@@ -21,12 +21,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+import compositelaunch.core.CompositeTools;
+
 /**
  * The CompositePage class for CompositeTab with buttons, table
- * and other useful methods 
+ * and several useful methods 
  *
  * @author Sergey Iryupin
- * @version 0.0.1 dated Jan 5, 2017
+ * @version 0.0.2 dated Jan 6, 2017
  */
 public class CompositePage extends Composite {
 
@@ -36,16 +38,15 @@ public class CompositePage extends Composite {
 	private final String DEL_BUTTON_TIP = "Click to delete configuration from the list";
 	private final int NUM_OF_COLUMNS = 2; // columns for GridLayout
 	private final int WITH_BUTTON = 80;
-	private final String TABLE_1_COLUMN = "Name";
-	private final String TABLE_2_COLUMN = "Type";
-	private final String NO_CONFIGURATION = "No configurations to choose/add";
+	private final String[] TABLE_TITLES = {"Name", "Type"};
+	private final String NO_CONFIGURATION = "No configurations to select/add";
 
 	private Button addConfiguration;
 	private Button deleteConfiguration;
 	private Table table;
 	private Menu menuChoiceConfiguration;
 
-	private final String CONGIF_LIST = "ConfigurationList";
+	private String typeConfiguration;
 	private List<String> configs;
 
 	private ITableChangedListener changedListener;
@@ -60,7 +61,7 @@ public class CompositePage extends Composite {
 		GridData gridButton = new GridData();
 		gridButton.widthHint = WITH_BUTTON;
 
-		addConfiguration = new Button(this, SWT.NONE);
+		addConfiguration = new Button(this, SWT.NONE); // add button
 		addConfiguration.setText(ADD_BUTTON);
 		addConfiguration.setToolTipText(ADD_BUTTON_TIP);
 		addConfiguration.setLayoutData(gridButton);
@@ -72,12 +73,12 @@ public class CompositePage extends Composite {
 			}
 		});
 
-		deleteConfiguration = new Button(this, SWT.NONE);
+		deleteConfiguration = new Button(this, SWT.NONE); // delete button
 		deleteConfiguration.setText(DEL_BUTTON);
 		deleteConfiguration.setToolTipText(DEL_BUTTON_TIP);
 		deleteConfiguration.setLayoutData(gridButton);
 		deleteConfiguration.setEnabled(false);
-		deleteConfiguration.addSelectionListener(new SelectionAdapter() {
+		deleteConfiguration.addSelectionListener(new SelectionAdapter() { // delete listener
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (table.getSelectionIndex() > -1) {
@@ -88,22 +89,22 @@ public class CompositePage extends Composite {
 			}
 		});
 
+		// like createSeparator() from AbstractLaunchConfigurationTab class
 		new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 
 		GridData gridTable = new GridData(GridData.FILL_BOTH);
 		gridTable.horizontalSpan = 2;
 
-		table = new Table(this, SWT.BORDER);
+		table = new Table(this, SWT.BORDER); // table with configuration list
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.setLayoutData(gridTable);
-		TableColumn columnName = new TableColumn(table, SWT.NULL);
-		columnName.setText(TABLE_1_COLUMN);
-		columnName.pack();
-		TableColumn columnType = new TableColumn(table, SWT.NULL);
-		columnType.setText(TABLE_2_COLUMN);
-		columnType.pack();
-		table.addSelectionListener(new SelectionAdapter() {
+		for (int i = 0; i < TABLE_TITLES.length; i++) {
+		      TableColumn column = new TableColumn(table, SWT.NONE);
+		      column.setText(TABLE_TITLES[i]);
+		      column.pack();
+		}
+		table.addSelectionListener(new SelectionAdapter() { // select listener
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				deleteConfiguration.setEnabled(true);
@@ -119,17 +120,10 @@ public class CompositePage extends Composite {
 	}
 
 	/*
-	 * Send signal for my changedListener
+	 * Send signal about changes for my changedListener
 	 */
 	public void changedConfig() {
 		if (changedListener != null) changedListener.handler();
-	}
-
-	/*
-	 * Returns the name of attribute to save/load configuration list
-	 */
-	public String getConfigListName() {
-		return CONGIF_LIST;
 	}
 
 	/*
@@ -137,38 +131,23 @@ public class CompositePage extends Composite {
 	 */
 	public void setConfigList(ILaunchConfiguration configuration) {
 		try {
-			configs = configuration.getAttribute(CONGIF_LIST, (List<String>)null);
 			table.removeAll();
-			for(String item : configs) {
-				TableItem tableItem = new TableItem(table, SWT.NULL);
-				tableItem.setText(item);
-				tableItem.setText(1, getTypeOfConfiguration(item));
-				table.getColumn(0).pack();
-				table.getColumn(1).pack();
+			typeConfiguration = configuration.getType().getName();
+			if (configuration.hasAttribute(CompositeTools.getConfigListName())) {
+				configs = configuration.getAttribute(CompositeTools.getConfigListName(), (List<String>)null);
+				for(String item : configs) {
+					TableItem tableItem = new TableItem(table, SWT.NULL);
+					tableItem.setText(item);
+					tableItem.setText(1, CompositeTools.getTypeOfConfiguration(item));
+					table.getColumn(0).pack();
+					table.getColumn(1).pack();
+				}
 			}
 		} catch (CoreException ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	/*
-	 * Get type of configuration by the name
-	 */
-	private String getTypeOfConfiguration(String name) {
-		String type = "<unknown>";
-		try {
-			for (ILaunchConfiguration config : DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations()) {
-				if (name.equals(config.getName())) {
-					type = config.getType().getName();
-					break;
-				}
-			}
-		} catch (CoreException ex) {
-			ex.printStackTrace();
-		}
-		return type;
-	}
-
 	/*
 	 * Prepare configuration list for save
 	 */
@@ -191,6 +170,8 @@ public class CompositePage extends Composite {
 			for (ILaunchConfiguration config : DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations()) {
 				String configType = config.getType().getName();
 
+				if (typeConfiguration.equals(configType)) continue; // skip self configuration type
+
 				MenuItem menuItem = null;
 				for (MenuItem item : menuChoiceConfiguration.getItems()) {
 					if (configType.equals(item.getText())) {
@@ -202,14 +183,13 @@ public class CompositePage extends Composite {
 				if (menuItem == null) {
 					menuItem = new MenuItem(menuChoiceConfiguration, SWT.CASCADE);
 					menuItem.setText(configType);
-
 					Menu subMenuItem = new Menu(menuItem);
 					menuItem.setMenu(subMenuItem);
 				}
 
 				MenuItem menuItemConfig = new MenuItem(menuItem.getMenu(), SWT.NONE);
 				menuItemConfig.setText(config.getName());
-				menuItemConfig.setData(config);
+				menuItemConfig.setData(configType);
 				menuItemConfig.addSelectionListener(new SelectionListener() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -217,11 +197,7 @@ public class CompositePage extends Composite {
 						TableItem tableItem = new TableItem(table, SWT.NULL);
 						tableItem.setText(item.getText());
 						table.getColumn(0).pack();
-						try {
-							tableItem.setText(1, ((ILaunchConfiguration) item.getData()).getType().getName());
-						} catch (CoreException ex) {
-							ex.printStackTrace();
-						}
+						tableItem.setText(1, (String) item.getData());
 						table.getColumn(1).pack();
 						changedConfig();
 					}

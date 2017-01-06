@@ -6,16 +6,16 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import compositelaunch.activator.Activator;
+import compositelaunch.core.CompositeTools;
 
 /**
  * The CompositeTab class for tab with list of configurations for launch,
  * overrides the general functionality of the tab
  *
  * @author Sergey Iryupin
- * @version 0.0.7 dated Jan 5, 2017
+ * @version 0.0.8 dated Jan 6, 2017
  */
 public class CompositeTab extends AbstractLaunchConfigurationTab {
 
@@ -47,7 +47,7 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(compositePage.getConfigListName(), compositePage.getConfigList());
+		configuration.setAttribute(CompositeTools.getConfigListName(), compositePage.getConfigList());
 	}
 
 	// Name of tab
@@ -59,7 +59,7 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 	// Image for tab
 	@Override
 	public Image getImage() {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, ICON_TAB).createImage();
+		return Activator.getImageDescriptor(ICON_TAB).createImage();
 	}
 
 	// Show control elements
