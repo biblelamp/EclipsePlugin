@@ -86,3 +86,9 @@ Jan 5, 2017
 Today is a great day.
 I finished (mostly) the writing of the plug-in, which is responsible for editing the configuration list.
 Next stage - launching part (and and any check, sure)
+
+Jan 6, 2017
+
+I can call this day (16th day) the Day The End of the main works on the writing test task.
+Composite plugin (version 0.0.10) mainly written, there are small little things like some checks.
+And I need a little more time to meditate on the code...
