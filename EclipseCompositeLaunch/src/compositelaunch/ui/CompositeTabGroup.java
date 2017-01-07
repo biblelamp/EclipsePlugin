@@ -20,7 +20,6 @@ public class CompositeTabGroup extends AbstractLaunchConfigurationTabGroup {
 				new CommonTab()
 		};
 		setTabs(tabs);
-
 	}
 
 }

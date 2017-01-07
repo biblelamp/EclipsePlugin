@@ -15,7 +15,7 @@ import compositelaunch.core.CompositeTools;
  * overrides the general functionality of the tab
  *
  * @author Sergey Iryupin
- * @version 0.0.8 dated Jan 6, 2017
+ * @version 0.0.9 dated Jan 7, 2017
  */
 public class CompositeTab extends AbstractLaunchConfigurationTab {
 
@@ -50,22 +50,29 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(CompositeTools.getConfigListName(), compositePage.getConfigList());
 	}
 
-	// Name of tab
+	@Override
+	public boolean isValid(ILaunchConfiguration configuration) {
+		if (compositePage.getConfigList().size() == 0)
+			return false;
+		for (String item : compositePage.getConfigList())
+			if (CompositeTools.isConfigurationUnknown(item))
+				return false;
+		return true;
+	}
+
 	@Override
 	public String getName() {
-		return NAME_OF_TAB;
+		return NAME_OF_TAB; // name of tab
 	}
 
-	// Image for tab
 	@Override
 	public Image getImage() {
-		return Activator.getImageDescriptor(ICON_TAB).createImage();
+		return Activator.getImageDescriptor(ICON_TAB).createImage(); // image for tab
 	}
 
-	// Show control elements
 	@Override
 	public Control getControl() {
-		return compositePage;
+		return compositePage; // get control elements
 	}
 
 }

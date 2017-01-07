@@ -10,6 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -28,7 +29,7 @@ import compositelaunch.core.CompositeTools;
  * and several useful methods 
  *
  * @author Sergey Iryupin
- * @version 0.0.2 dated Jan 6, 2017
+ * @version 0.0.3 dated Jan 7, 2017
  */
 public class CompositePage extends Composite {
 
@@ -44,10 +45,11 @@ public class CompositePage extends Composite {
 	private Button addConfiguration;
 	private Button deleteConfiguration;
 	private Table table;
+	private Color colorErrorItem;
 	private Menu menuChoiceConfiguration;
 
-	private String typeConfiguration;
-	private List<String> configs;
+	private String typeConfiguration; // type self configuration
+	private List<String> configs; // for get/save configuration list
 
 	private ITableChangedListener changedListener;
 
@@ -100,9 +102,9 @@ public class CompositePage extends Composite {
 		table.setLinesVisible(true);
 		table.setLayoutData(gridTable);
 		for (int i = 0; i < TABLE_TITLES.length; i++) {
-		      TableColumn column = new TableColumn(table, SWT.NONE);
-		      column.setText(TABLE_TITLES[i]);
-		      column.pack();
+			TableColumn column = new TableColumn(table, SWT.NONE);
+		    column.setText(TABLE_TITLES[i]);
+		    column.pack();
 		}
 		table.addSelectionListener(new SelectionAdapter() { // select listener
 			@Override
@@ -110,6 +112,7 @@ public class CompositePage extends Composite {
 				deleteConfiguration.setEnabled(true);
 			}
 		});
+		colorErrorItem = new Color(this.getDisplay(), 255, 0, 0);
 	}
 
 	/*
@@ -123,7 +126,8 @@ public class CompositePage extends Composite {
 	 * Send signal about changes for my changedListener
 	 */
 	public void changedConfig() {
-		if (changedListener != null) changedListener.handler();
+		if (changedListener != null)
+			changedListener.handler();
 	}
 
 	/*
@@ -132,29 +136,38 @@ public class CompositePage extends Composite {
 	public void setConfigList(ILaunchConfiguration configuration) {
 		try {
 			table.removeAll();
-			typeConfiguration = configuration.getType().getName();
+			typeConfiguration = configuration.getType().getName(); // save self configuration type
 			if (configuration.hasAttribute(CompositeTools.getConfigListName())) {
 				configs = configuration.getAttribute(CompositeTools.getConfigListName(), (List<String>)null);
-				for(String item : configs) {
-					TableItem tableItem = new TableItem(table, SWT.NULL);
-					tableItem.setText(item);
-					tableItem.setText(1, CompositeTools.getTypeOfConfiguration(item));
-					table.getColumn(0).pack();
-					table.getColumn(1).pack();
-				}
+				for(String item : configs)
+					addItemToTable(new String[]{item, CompositeTools.getTypeConfigurationByName(item)});
 			}
 		} catch (CoreException ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/*
-	 * Prepare configuration list for save
+	 * Get configuration list for saving
 	 */
 	public List<String> getConfigList() {
 		configs = new ArrayList<String>();
-		for (TableItem item : table.getItems()) configs.add(item.getText());
+		for (TableItem item : table.getItems())
+			configs.add(item.getText());
 		return configs;
+	}
+
+	/*
+	 * Add a new row to the table
+	 */
+	private void addItemToTable(String[] data) {
+		TableItem tableItem = new TableItem(table, SWT.NULL);
+		for (int i = 0; i < data.length; i++) {
+			tableItem.setText(i, data[i]);
+			table.getColumn(i).pack();
+		}
+		if (CompositeTools.isConfigurationUnknown(data[0]))
+			tableItem.setForeground(colorErrorItem);
 	}
 
 	/*
@@ -173,12 +186,11 @@ public class CompositePage extends Composite {
 				if (typeConfiguration.equals(configType)) continue; // skip self configuration type
 
 				MenuItem menuItem = null;
-				for (MenuItem item : menuChoiceConfiguration.getItems()) {
+				for (MenuItem item : menuChoiceConfiguration.getItems())
 					if (configType.equals(item.getText())) {
 						menuItem = item;
 						break;
 					}
-				}
 
 				if (menuItem == null) {
 					menuItem = new MenuItem(menuChoiceConfiguration, SWT.CASCADE);
@@ -194,11 +206,7 @@ public class CompositePage extends Composite {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						MenuItem item = MenuItem.class.cast(e.getSource());
-						TableItem tableItem = new TableItem(table, SWT.NULL);
-						tableItem.setText(item.getText());
-						table.getColumn(0).pack();
-						tableItem.setText(1, (String) item.getData());
-						table.getColumn(1).pack();
+						addItemToTable(new String[]{item.getText(), (String) item.getData()});
 						changedConfig();
 					}
 					@Override
