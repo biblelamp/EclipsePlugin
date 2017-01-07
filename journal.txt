@@ -92,3 +92,9 @@ Jan 6, 2017
 I can call this day (16th day) the Day The End of the main works on the writing test task.
 Composite plugin (version 0.0.10) mainly written, there are small little things like some checks.
 And I need a little more time to meditate on the code...
+
+Jan 7, 2017
+
+I added check for deleted or renamed configurations to UI part and
+opened for myself how to use isValid function in AbstractLaunchConfigurationTab class...
+Now I'm not sure - there is now need to check in the Launch part?
