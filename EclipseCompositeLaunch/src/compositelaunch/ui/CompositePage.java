@@ -6,11 +6,13 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -29,7 +31,7 @@ import compositelaunch.core.CompositeTools;
  * and several useful methods 
  *
  * @author Sergey Iryupin
- * @version 0.0.3 dated Jan 7, 2017
+ * @version 0.0.4 dated Jan 8, 2017
  */
 public class CompositePage extends Composite {
 
@@ -47,9 +49,6 @@ public class CompositePage extends Composite {
 	private Table table;
 	private Color colorErrorItem;
 	private Menu menuChoiceConfiguration;
-
-	private String typeConfiguration; // type self configuration
-	private List<String> configs; // for get/save configuration list
 
 	private ITableChangedListener changedListener;
 
@@ -97,7 +96,7 @@ public class CompositePage extends Composite {
 		GridData gridTable = new GridData(GridData.FILL_BOTH);
 		gridTable.horizontalSpan = 2;
 
-		table = new Table(this, SWT.BORDER); // table with configuration list
+		table = new Table(this, SWT.BORDER); // table with configurations list
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.setLayoutData(gridTable);
@@ -131,27 +130,38 @@ public class CompositePage extends Composite {
 	}
 
 	/*
+	 * Check configuration for emptiness and contents of invalid configurations 
+	 */
+	public boolean isValid() {
+		if (table.getItemCount() == 0)
+			return false;
+		for (TableItem item : table.getItems())
+			if (CompositeTools.isConfigurationEmptyOrBanned(item.getText()))
+				return false;
+		return true;
+	}
+
+	/*
 	 * Expand the configuration list to the table
 	 */
 	public void setConfigList(ILaunchConfiguration configuration) {
 		try {
 			table.removeAll();
-			typeConfiguration = configuration.getType().getName(); // save self configuration type
-			if (configuration.hasAttribute(CompositeTools.getConfigListName())) {
-				configs = configuration.getAttribute(CompositeTools.getConfigListName(), (List<String>)null);
-				for(String item : configs)
-					addItemToTable(new String[]{item, CompositeTools.getTypeConfigurationByName(item)});
-			}
+			CompositeTools.setConfigType(configuration.getType().getName()); // save self configuration type
+			if (configuration.hasAttribute(CompositeTools.getConfigListName()))
+				for(String item : configuration.getAttribute(CompositeTools.getConfigListName(), (List<String>)null))
+					addItemToTable(new String[]{item, CompositeTools.getTypeConfigurationByName(item)}, 
+						CompositeTools.getImageConfigurationByName(item));
 		} catch (CoreException ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	/*
-	 * Get configuration list for saving
+	 * Get configurations list for saving
 	 */
 	public List<String> getConfigList() {
-		configs = new ArrayList<String>();
+		List<String> configs = new ArrayList<String>();
 		for (TableItem item : table.getItems())
 			configs.add(item.getText());
 		return configs;
@@ -160,13 +170,14 @@ public class CompositePage extends Composite {
 	/*
 	 * Add a new row to the table
 	 */
-	private void addItemToTable(String[] data) {
+	private void addItemToTable(String[] data, Image image) {
 		TableItem tableItem = new TableItem(table, SWT.NULL);
 		for (int i = 0; i < data.length; i++) {
 			tableItem.setText(i, data[i]);
 			table.getColumn(i).pack();
 		}
-		if (CompositeTools.isConfigurationUnknown(data[0]))
+		tableItem.setImage(image);
+		if (CompositeTools.isConfigurationEmptyOrBanned(data[0]))
 			tableItem.setForeground(colorErrorItem);
 	}
 
@@ -183,7 +194,7 @@ public class CompositePage extends Composite {
 			for (ILaunchConfiguration config : DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations()) {
 				String configType = config.getType().getName();
 
-				if (typeConfiguration.equals(configType)) continue; // skip self configuration type
+				if (CompositeTools.getConfigType().equals(configType)) continue; // skip self configuration type
 
 				MenuItem menuItem = null;
 				for (MenuItem item : menuChoiceConfiguration.getItems())
@@ -195,6 +206,7 @@ public class CompositePage extends Composite {
 				if (menuItem == null) {
 					menuItem = new MenuItem(menuChoiceConfiguration, SWT.CASCADE);
 					menuItem.setText(configType);
+					menuItem.setImage(DebugUITools.getImage(config.getType().getIdentifier()));
 					Menu subMenuItem = new Menu(menuItem);
 					menuItem.setMenu(subMenuItem);
 				}
@@ -202,11 +214,12 @@ public class CompositePage extends Composite {
 				MenuItem menuItemConfig = new MenuItem(menuItem.getMenu(), SWT.NONE);
 				menuItemConfig.setText(config.getName());
 				menuItemConfig.setData(configType);
+				menuItemConfig.setImage(DebugUITools.getImage(config.getType().getIdentifier()));
 				menuItemConfig.addSelectionListener(new SelectionListener() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						MenuItem item = MenuItem.class.cast(e.getSource());
-						addItemToTable(new String[]{item.getText(), (String) item.getData()});
+						addItemToTable(new String[]{item.getText(), (String) item.getData()}, item.getImage());
 						changedConfig();
 					}
 					@Override

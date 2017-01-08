@@ -15,11 +15,11 @@ import compositelaunch.core.CompositeTools;
  * overrides the general functionality of the tab
  *
  * @author Sergey Iryupin
- * @version 0.0.9 dated Jan 7, 2017
+ * @version 0.0.10 dated Jan 8, 2017
  */
 public class CompositeTab extends AbstractLaunchConfigurationTab {
 
-	private final String NAME_OF_TAB = "Configuration List";
+	private final String NAME_OF_TAB = "Configurations List";
 	private final String ICON_TAB = "icons/launch.png";
 
 	private CompositePage compositePage;
@@ -52,12 +52,7 @@ public class CompositeTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(ILaunchConfiguration configuration) {
-		if (compositePage.getConfigList().size() == 0)
-			return false;
-		for (String item : compositePage.getConfigList())
-			if (CompositeTools.isConfigurationUnknown(item))
-				return false;
-		return true;
+		return compositePage.isValid();
 	}
 
 	@Override
