@@ -105,3 +105,7 @@ I found the way how to add icons configurations to the Menu (using DebugUITools)
 I have found out that everybody can change .launch file which contains configuration list.
 So I have to add a check to the addition from "outside" the self configuration in self list to avoid loops...
 OK, I wrote all that I had to write (on my mind) and I'm going to send my task to check.
+
+Jan 18, 2017
+
+After checking, unfortunately, I didn't get job offer...
